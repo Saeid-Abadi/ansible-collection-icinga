@@ -1,0 +1,5 @@
+---
+- name: install ido-mysql packages
+  package:
+    name: icinga2-ido-mysql
+    state: "{{ item.state }}"

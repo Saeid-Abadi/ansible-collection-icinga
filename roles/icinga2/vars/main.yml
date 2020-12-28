@@ -1,6 +1,14 @@
 ---
 icinga2_cert_path: /var/lib/icinga2/certs
 icinga2_feature_defaults:
+  ido-mysql:
+    object_type: IdoMysqlConnection
+    object_name: ido-mysql
+    attrs:
+      user: icinga
+      password: icinga
+      host: localhost
+      database: icinga
   ido-pgsql:
     object_type: IdoPgsqlConnection
     object_name: ido-pgsql
