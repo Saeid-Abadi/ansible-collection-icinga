@@ -1,0 +1,5 @@
+---
+- name: install ido-pgsql packages
+  package:
+    name: icinga2-ido-pgsql
+    state: "{{ item.state }}"
