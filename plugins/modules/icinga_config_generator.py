@@ -5,7 +5,9 @@ __metaclass__ = type
 
 DOCUMENTATION = """
         module: icinga2_config_generator
-        author: Thilo Wening, Lennart Betz
+        author:
+          - Lennart Betz (lennart.betz@netways.de)
+          - Thilo Wening (thilo.wening@netways.de
         version_added: "0.1"
         short_description: generate icinga2 objects
         description:
@@ -15,40 +17,70 @@ DOCUMENTATION = """
           - if read in variable context, the file can be interpreted as YAML if the content is valid to the parser.
           - this lookup does not understand globing --- use the fileglob lookup instead.
         options:
-          name:
+          object_name:
             description: Name of the host object
             required: true
             type: string
-        state:
-          description: |
-            Choose between present or absent,
-            whether the host should be created or deleted
-          required: true
-          type: string
+          object_type:
+            description: Icinga 2 object type.
+            required: true
+            type: string
+          state:
+            description: |
+              Choose which state the config should be in - object|template|apply
+            required: true
+            type: string
+          constants:
+            description: A dict including all constants.
+            required: true
+            type: dict
+          attrs:
+            description: A dict with all object attributes and custom attributes listed below the "vars" key.
+            required: false
+            type: dict
+          imports:
+            description: A list including template imports for the object
+            required: false
+            type: list
 """
 
 EXAMPLES = r'''
 # Create Host
-- name: Create Host at Director
-  icinga2_director_host:
-    name: agent.localdomain
-    host: "http://icingaweb.localdomain/icingaweb2"
-    username: 'icinga'
-    password: 'icinga'
-    state: 'present'
-    templates:
+- name: generate Host configuration
+  icinga_config_generator:
+    object_name: agent.localdomain
+    object_type: Host
+    state: object
+    constants: "{{ icinga2_constants }}"
+    imports:
       - "basic-host"
-    host_vars:
+    attrs:
       address: "127.0.0.1"
       check_interval: "300"
       check_command: "hostalive"
-    custom_vars:
-      os: "Linux"
-      application: "Apache"
+      vars:
+        os: Linux
+        application: Apache
+
+- name: generate service configuration
+  icinga_config_generator:
+    object_name: ping4
+    object_type: Service
+    state: object
+    constants: "{{ icinga2_constants }}"
+    imports:
+      - generic-service
+    attrs:
+      host_name: agent.localdomain
+      check_command: ping4
+      vars:
+        ping_wrta: 100
+        ping_crta: 200
+
 '''
 
 RETURN = r'''
- test blubber
+ Return String with Object
 '''
 
 from ansible.module_utils.basic import AnsibleModule
@@ -77,12 +109,17 @@ class Icinga2Objects(object):
       config = ''
       indent = 0
 
-      if re.search(r'(object|template|apply)', self.state) and not (self.apply_target and self.apply):
+      # Is this a service?
+      if (re.search(r'(object|template|apply)', self.state) and not
+          (self.apply_target and self.apply)):
           config += '%s %s "%s" {\n' % (self.state, self.object_type, self.object_name)
       elif self.state == 'apply' and self.object_type == 'Service':
           config += 'apply Service "%s " for (%s)' % (self.object_name, self.apply)
       elif self.state == 'apply' and re.match(r'^(Notification|Dependency)$', self.object_type):
           config += 'apply %s "%s" to %s' % (self.object_type, self.object_name, self.apply_target)
+      else:
+        module.fail_json(msg=('Type ' + self.object_type + ' and/or state '
+          + self.state + ' not supported'))
       for imp in self.imports:
           config += '  import "%s"\n' % (imp)
           config += '\n'
