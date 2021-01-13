@@ -110,16 +110,17 @@ class Icinga2Objects(object):
       indent = 0
 
       # Is this a service?
-      if (re.search(r'(object|template|apply)', self.state) and not
-          (self.apply_target and self.apply)):
+      if (re.search(r'(object|template)', self.state) and not (self.apply_target and self.apply)):
           config += '%s %s "%s" {\n' % (self.state, self.object_type, self.object_name)
-      elif self.state == 'apply' and self.object_type == 'Service':
+      elif self.state == 'apply' and self.object_type == 'Service' and self.apply:
           config += 'apply Service "%s " for (%s)' % (self.object_name, self.apply)
-      elif self.state == 'apply' and re.match(r'^(Notification|Dependency)$', self.object_type):
+      elif self.state == 'apply' and self.object_type == 'Service':
+          config += 'apply Service "%s"' % (cfg.parse(self.object_name))
+      elif self.state == 'apply' and re.match(r'^(Notification|Dependency|ScheduledDowntime)$', self.object_type):
           config += 'apply %s "%s" to %s' % (self.object_type, self.object_name, self.apply_target)
       else:
         module.fail_json(msg=('Type ' + self.object_type + ' and/or state '
-          + self.state + ' not supported'))
+          + self.state + ' combination not supported'))
       for imp in self.imports:
           config += '  import "%s"\n' % (imp)
           config += '\n'
