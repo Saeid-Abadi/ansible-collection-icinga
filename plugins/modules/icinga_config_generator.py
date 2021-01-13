@@ -186,6 +186,7 @@ def main():
           constants=dict(type=dict, required=True)
       ),
       supports_check_mode=False,
+      add_file_common_args=True,
   )
 
   result = Icinga2Objects().run()
