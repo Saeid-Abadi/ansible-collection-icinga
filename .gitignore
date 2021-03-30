@@ -130,3 +130,6 @@ dmypy.json
 
 # Editors
 .*.sw[op]
+
+# PyCharm Project Folder
+.idea/
