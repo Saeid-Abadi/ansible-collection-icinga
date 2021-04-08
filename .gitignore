@@ -130,3 +130,10 @@ dmypy.json
 
 # Editors
 .*.sw[op]
+
+# PyCharm Project settings
+.idea/
+
+# Vagrant
+.vagrant/
+Vagrantfile
