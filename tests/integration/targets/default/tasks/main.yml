@@ -1,0 +1,23 @@
+- name: Create a new droplet
+  icinga2_zone:
+    name: NodeName
+    endpoints:
+      - NodeName
+    parent: master
+    global: true
+    state: present
+  register: result
+
+- debug:
+    var: result
+
+- assert:
+    that:
+      - result is success
+      - result is changed
+      #- "result.data.droplet.name == 'test-droplet'"
+      #- "result.data.droplet.size_slug == 's-1vcpu-1gb'"
+      #- "result.data.droplet.region.slug == 'fra1'"
+      #- "result.data.droplet.image.slug == 'centos-8-x64'"
+      #- "result.data.droplet.tags == ['ansible', 'test', 'tags']"
+      #- "result.data.droplet.status == 'active'"
