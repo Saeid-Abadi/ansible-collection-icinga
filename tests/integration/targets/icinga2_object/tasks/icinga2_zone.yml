@@ -1,0 +1,22 @@
+- name: Test Icinga 2 Zones object
+  icinga2_object:
+    type: Zone
+    name: NodeName
+    args:
+      endpoints:
+        - NodeName
+      parent: master
+  register: result
+
+- set_fact:
+    file: "{{ lookup('file', '/tmp/frag_icinga2/zones.conf/10_zone-NodeName')}}"
+
+- debug:
+    var: result
+- debug:
+    var: file
+
+- assert:
+    that:
+      - result is success
+      - "file == 'object Zone NodeName {\n  endpoints = [ NodeName, ]\n  parent = \"master\"\n}'"

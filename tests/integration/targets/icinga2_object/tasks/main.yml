@@ -1,0 +1,12 @@
+- set_fact:
+    icinga2_fragments_path: "/tmp/frag_icinga2"
+
+- set_fact:
+    icinga2_combined_constants: "{{ icinga2_default_constants }}"
+
+- name: delete tmp directory
+  file:
+    path: "{{ icinga2_fragments_path }}"
+    state: absent
+
+- include: icinga2_zone.yml
