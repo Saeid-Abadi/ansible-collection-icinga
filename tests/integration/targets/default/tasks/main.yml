@@ -11,10 +11,10 @@
 - debug:
     var: result
 
-- assert:
-    that:
-      - result is success
-      - result is changed
+# - assert:
+#     that:
+#       - result is success
+#       - result is changed
       #- "result.data.droplet.name == 'test-droplet'"
       #- "result.data.droplet.size_slug == 's-1vcpu-1gb'"
       #- "result.data.droplet.region.slug == 'fra1'"
