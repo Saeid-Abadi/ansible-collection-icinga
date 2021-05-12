@@ -16,6 +16,7 @@ jobs:
       uses: ansible/ansible-lint-action@master
       with:
         targets: "roles/"
+        args: "-R"
         # [optional]
         # Arguments to override a package and its version to be set explicitly.
         # Must follow the example syntax.
