@@ -36,13 +36,13 @@ class ActionModule(ActionBase):
 		path = task_vars['icinga2_fragments_path'] + '/' + obj['file'] + '/'
 		file_fragment = path + obj['order'] + '_' + object_type.lower() + '-' + obj['name']
 
-		file_args = dict()
-		file_args['state'] = 'directory'
-		file_args['path'] = path
-		file_module = self._execute_module(module_name='file', module_args=file_args, task_vars=task_vars, tmp=tmp)
-		result = merge_hash(result, file_module)
+		if obj['state'] != 'absent' or 'features-available' in path:
+			file_args = dict()
+			file_args['state'] = 'directory'
+			file_args['path'] = path
+			file_module = self._execute_module(module_name='file', module_args=file_args, task_vars=task_vars, tmp=tmp)
+			result = merge_hash(result, file_module)
 
-		if obj['state'] != 'absent':
 			varlist = list() # list of variables from 'apply for'
 
 			#
@@ -107,13 +107,11 @@ class ActionModule(ActionBase):
 
 			result = merge_hash(result, copy_action.run(task_vars=task_vars))
 		else:
-			# remove file if does not belong to a feature
-			if 'features-available' not in path:
-				file_args = dict()
-				file_args['state'] = 'absent'
-				file_args['path'] = file_fragment
-				file_module = self._execute_module(module_name='file', module_args=file_args, task_vars=task_vars, tmp=tmp)
-				result = merge_hash(result, file_module)
+			file_args = dict()
+			file_args['state'] = 'absent'
+			file_args['path'] = file_fragment
+			file_module = self._execute_module(module_name='file', module_args=file_args, task_vars=task_vars, tmp=tmp)
+			result = merge_hash(result, file_module)
 			result['dest'] = file_fragment
 
 		return result
