@@ -1,5 +1,6 @@
 import re
 
+from __future__ import (absolute_import, division, print_function)
 from ansible.errors import AnsibleError, AnsibleFileNotFound
 from ansible.plugins.action import ActionBase
 from ansible.module_utils._text import to_native
