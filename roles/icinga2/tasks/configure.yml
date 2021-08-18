@@ -78,13 +78,27 @@
     #  - my_own_config.d
     #- item.split('/')[0] in icinga2_local_config or item.split('/')[0] == 'zones.d'
 
-- name: assemble config files
+# Get all features which are in state absent
+- set_fact:
+    _absent_configured_features: "{{ _absent_configured_features|default([]) + [item] }}"
+  loop: "{{ icinga2_features| rejectattr('state','undefined')| selectattr('state','match','absent')| map(attribute='name')| list }}"
+
+- name: assemble config files with reload
   ansible.builtin.assemble:
     src: "{{ item.path }}"
     dest: "{{ item.path |regex_replace('^'+icinga2_fragments_path, '/etc/icinga2') }}"
     delimiter: ' '
+  when: "item.path|basename|splitext|first not in _absent_configured_features|default([])"
   loop: "{{ result.files }}"
   notify: reload icinga2 service
+
+- name: assemble features-available configs without reload
+  ansible.builtin.assemble:
+    src: "{{ item.path }}"
+    dest: "{{ item.path |regex_replace('^'+icinga2_fragments_path, '/etc/icinga2') }}"
+    delimiter: ' '
+  when: "item.path|basename|splitext|first in _absent_configured_features|default([])"
+  loop: "{{ result.files }}"
 
 - name: remove empty config files
   ansible.builtin.file:
