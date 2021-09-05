@@ -98,3 +98,4 @@ icinga2_object_types:
   - Dependency
   - NotificationCommand
   - EventCommand
+  - PerfdataWriter
