@@ -94,3 +94,4 @@ icinga2_object_types:
   - User
   - UserGroup
   - Notification
+  - ScheduledDowntime
