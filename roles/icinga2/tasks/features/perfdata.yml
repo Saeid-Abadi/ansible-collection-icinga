@@ -1,3 +1,5 @@
+---
+
 - name: feature influxdb PerfdataWriter object
   icinga2_object:
     name: perfdata
