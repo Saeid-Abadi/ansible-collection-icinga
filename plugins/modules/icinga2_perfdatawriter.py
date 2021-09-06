@@ -10,7 +10,7 @@ def main():
 			state                   = dict(default='present', choices=['present', 'absent']),
 			name                    = dict(required=True),
 			order                   = dict(default=10, type='int'),
-			file                    = dict(default='features-available/graphite.conf', type='str'),
+			file                    = dict(default='features-available/perfdata.conf', type='str'),
 			host_perfdata_path      = dict(type='str'),
 			service_perfdata_path   = dict(type='str'),
 			host_temp_path          = dict(type='str'),
