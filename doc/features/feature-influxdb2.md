@@ -11,6 +11,7 @@ icinga2_features:
     port: 8086
     bucket: icinga2
     organization: monitoring
+    auth_token: "token"
 ```
 
 ### Feature variables
