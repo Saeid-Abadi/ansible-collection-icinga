@@ -1,0 +1,8 @@
+---
+#icingaweb2 database configuration.
+mysql_user_name: icingaweb
+mysql_user_password: icingaweb
+mysql_db_name: icingaweb
+mysql_user_name_IDO: icinga
+mysql_user_password_IDO: icinga
+mysql_db_name_IDO: icinga

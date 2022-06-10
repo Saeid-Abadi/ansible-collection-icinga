@@ -1,0 +1,9 @@
+---
+- name: Yum - install Icinga Web 2
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - icingaweb2
+    - icingacli

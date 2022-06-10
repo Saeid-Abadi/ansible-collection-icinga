@@ -1,0 +1,35 @@
+---
+- name: Instlall Icinga 2 Plugins
+  yum:
+    name: "{{ plugins_packages }}"
+    state: present
+
+- name: RedHat , httpd installation
+  yum:
+    name: "{{ webserver }}"
+    update_cache: yes
+    state: present
+  notify: Restart Webserver
+
+- name: RedHat , Service httpd
+  service:
+    name: "{{ webserver }}"
+    state: started
+    enabled: yes
+
+- name: RedHat , Install PHP
+  yum:
+    name: "{{ php_packages }}"
+    state: present
+
+- name: RedHat , Install PHP FPM
+  yum:
+    name: "{{ php_fpm }}"
+    state: present
+  notify: Restart PHP FPM
+
+- name: RedHat ,  Service PHP FPM
+  service:
+    name: "{{ php_fpm }}"
+    state: started
+    enabled: yes

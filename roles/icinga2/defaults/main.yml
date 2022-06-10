@@ -13,4 +13,5 @@ icinga2_features:
   - name: checker
   - name: notification
   - name: mainlog
+  - name: idomysql
 icinga2_remote_objects: []

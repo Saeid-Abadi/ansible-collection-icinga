@@ -1,0 +1,11 @@
+---
+- name: Restart Webserver
+  service:
+    name: "{{ webserver }}"
+    state: restarted
+
+- name: Restart PHP FPM
+  service:
+    name: "{{ php_fpm }}"
+    state: restarted
+

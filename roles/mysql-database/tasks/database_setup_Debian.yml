@@ -1,0 +1,54 @@
+---
+- name: Debian , Ensure Mariadb packages are installed
+  apt:
+    name: "{{ mysql_packages }}"
+    state: present
+  register: db_created
+
+- name: Debian , Service Mariadb
+  become: yes
+  service:
+    name: "{{ mysql_daemon }}"
+    state: started
+    enabled: true
+
+- name: Debian , Create Database
+  become: yes
+  mysql_db:
+    name: "{{ mysql_db_name }}"
+    state: import
+    target: /usr/share/icingaweb2/etc/schema/mysql.schema.sql
+  when: db_created.changed
+
+- name: Debian , Create Database User and Password
+  mysql_user:
+    name: "{{ mysql_user_name }}"
+    password: "{{ mysql_user_password }}"
+    host: localhost
+    state: present
+    priv: "icingaweb.*:ALL"
+  when: db_created.changed
+
+- name: Debian , Insert Icinga Web 2 User and Password
+  become: yes
+  command: >
+    mysql --user={{ mysql_user_name }} --password={{ mysql_user_password }} {{ mysql_db_name }} --host=localhost --batch --skip-column-names --execute="INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('icinga', 1, '$2y$10$qDelcV6rD198rjNDL4OrFuAUDTIabvCJh/rcuwQexGRV0.BP29J1u')"
+  when: db_created.changed
+
+- name: Debian , Create Icinga IDO-MYSQL Database
+  become: yes
+  mysql_db:
+    name: "{{ mysql_db_name_IDO }}"
+    state: import
+    target: /usr/share/icinga2-ido-mysql/schema/mysql.sql
+  when: db_created.changed
+
+- name: Debian , Icinga IDO-MYSQL User and Password
+  mysql_user:
+    name: "{{ mysql_user_name_IDO }}"
+    password: "{{ mysql_user_password_IDO }}"
+    host: localhost
+    state: present
+    priv: "icinga.*:ALL"
+  when: db_created.changed
+

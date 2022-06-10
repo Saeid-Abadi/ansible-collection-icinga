@@ -1,0 +1,10 @@
+---
+- name: Apt - install Icinga Web 2
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: 
+    - icingaweb2
+    - icingacli

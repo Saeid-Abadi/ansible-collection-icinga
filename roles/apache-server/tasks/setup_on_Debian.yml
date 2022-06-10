@@ -1,0 +1,36 @@
+---
+- name: Instlall Icinga 2 Plugins
+  apt:
+    name: "{{ plugins_packages }}"
+    state: present
+
+- name: Debian , Apache2 installation
+  apt:
+    name: "{{ webserver }}"
+    update_cache: yes
+    state: present
+  notify: Restart Webserver
+
+- name: Debian , Service Apache2
+  service:
+    name: "{{ webserver }}"
+    state: started
+    enabled: yes
+
+- name: Debian , Install PHP
+  apt:
+    name: "{{ php_packages }}"
+    state: present
+
+- name: Debian , Install PHP FPM
+  apt:
+    name: "{{ php_fpm }}"
+    state: present
+  notify: Restart PHP FPM
+
+- name: Debian ,  Service PHP FPM
+  service:
+    name: "{{ php_fpm }}"
+    state: started
+    enabled: yes
+

@@ -1,0 +1,6 @@
+---
+webserver: httpd
+php_packages: rh-php73-php
+php_fpm: rh-php73-php-fpm
+
+plugins_packages: nagios-plugins-all

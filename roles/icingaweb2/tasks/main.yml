@@ -1,0 +1,21 @@
+---
+- name: Include OS specific vars
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - install
+    - config
+
+- name: Install
+  include: "install_on_{{ ansible_os_family }}.yml"
+  tags:
+    - install
+
+- name: Configure
+  include: configure.yml
+  tags:
+    - config
+
+- name: Include Icinga Web 2 Modules installation
+  include: icingaweb2_installation_modules.yml
+  tags:
+    - install

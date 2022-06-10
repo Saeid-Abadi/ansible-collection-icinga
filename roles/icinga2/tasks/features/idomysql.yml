@@ -3,14 +3,15 @@
 - name: set api feature facts
   set_fact:
     icinga2_import_schema: "{{ icinga2_dict_features.idomysql.import_schema| default(False) }}"
+#fatal: [master]: FAILED! => {"msg": "Call to module failed: missing required arguments: password"}
 
-- name: feature idomysql IdoMysqlConnection object
-  icinga2_object:
-    name: ido-mysql
-    type: IdoMysqlConnection
-    file: features-available/ido-mysql.conf
-    args: "{{ icinga2_dict_features.idomysql }}"
-  register: result
+    #- name: feature idomysql IdoMysqlConnection object
+    #icinga2_object:
+    #name: ido-mysql
+    #type: IdoMysqlConnection
+    #file: features-available/ido-mysql.conf
+    #args: "{{ icinga2_dict_features.idomysql }}"
+    #register: result
 
 - set_fact:
     icinga2_local_objects: "{{ icinga2_local_objects|default([]) + [result.dest] }}"

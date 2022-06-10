@@ -1,0 +1,8 @@
+webserver: apache2
+php_packages:
+  - php7.3
+  - libapache2-mod-php
+php_fpm: php7.3-fpm
+
+plugins_packages: monitoring-plugins
+

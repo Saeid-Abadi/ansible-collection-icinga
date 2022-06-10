@@ -19,5 +19,5 @@ icinga_repo_gpgkey: "https://packages.icinga.com/icinga.key"
 icinga_repo_stable: true
 icinga_repo_testing: false
 icinga_repo_snapshot: false
-icinga_repo_epel: false
-icinga_repo_scl: false
+icinga_repo_epel: true
+icinga_repo_scl: true

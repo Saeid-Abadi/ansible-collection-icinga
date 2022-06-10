@@ -1,0 +1,5 @@
+---
+mysql_daemon: mariadb
+mysql_packages:
+  - python-mysqldb
+  - mariadb-server
