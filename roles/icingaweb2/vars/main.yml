@@ -20,5 +20,6 @@ icingaweb2_module_packages:
   perfdatagraphsinfluxdbv2: icingaweb2-module-perfdatagraphs-influxdbv2
   perfdatagraphsprometheus: icingaweb2-module-perfdatagraphs-prometheus
   perfdatagraphselasticsearch: icingaweb2-module-perfdatagraphs-elasticsearch
+  servicenowimport: icingaweb2-module-servicenow-import
   sso: icinga-sso-web
   totp: icinga-totp-web

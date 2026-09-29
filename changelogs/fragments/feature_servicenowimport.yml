@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Add the `ServiceNow Import <https://github.com/NETWAYS/icingaweb2-module-servicenow-import>`__ module as available module to the `icingaweb2` role.
+    It relies on the `NETWAYS Extras Repository <https://packages.netways.de/extras/>`__ being enabled.
