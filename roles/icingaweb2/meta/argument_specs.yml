@@ -1141,3 +1141,10 @@ argument_specs:
                     description:
                       - Extra options for the client authentication.
                     type: str
+          servicenowimport:
+            description:
+              - This configures the L(NETWAYS ServiceNow Import module, https://github.com/NETWAYS/icingaweb2-module-servicenow-import).
+            type: dict
+            options:
+              enabled: *module_enabled
+              source: *module_source
