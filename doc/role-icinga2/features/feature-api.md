@@ -197,6 +197,18 @@ ssl_key: certificate.key
 > **_NOTE:_** All three parameters have to be set otherwise a signing request is built
 and `parent_host` must be defined.
 
+On a config master (`parent_host: none`) the CA private key can additionally be pinned via `ssl_ca_key`. When set, the role places `ca.key` and `ca.crt` under `{{ icinga2_ca_path }}` (default `/var/lib/icinga2/ca/`) so the master can sign agent CSRs with a fixed, externally managed CA. The parameter is ignored on agents and satellites.
+
+```yaml
+icinga2_features:
+  - name: api
+    parent_host: none
+    ssl_cacert: /home/ansible/certs/ca.crt
+    ssl_ca_key: /home/ansible/certs/ca.key
+    ssl_cert: /home/ansible/certs/master.crt
+    ssl_key: /home/ansible/certs/master.key
+```
+
 The role will copy the files from your Ansible controller node to
 **/var/lib/icinga2/certs** on the remote host. File names are
 set to by the parameter `cert_name` (by default FQDN).
@@ -253,6 +265,9 @@ icinga2_features:
 
 * `ssl_key: string`
   * Path to the certificate key file when using manual certificates.
+
+* `ssl_ca_key: string`
+  * Path to the CA private key file. Only effective when `parent_host: none`. When set, `ca.key` and `ca.crt` are placed under `{{ icinga2_ca_path }}` so the master can sign agent CSRs with the provided CA material.
 
 * `ssl_remote_source: boolean`
   * Whether to copy the certificates and key from the remote host instead of from the Ansible controller.
