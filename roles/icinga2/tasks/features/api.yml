@@ -37,7 +37,7 @@
 - name: Api feature cleanup arguments list
   ansible.builtin.set_fact:
     icinga2_api_listener_args: "{{ icinga2_api_listener_args | default({}) | combine({idx.key: idx.value}) }}"
-  when: idx.key not in ['ca_host', 'parent_host', 'ca_host_port', 'parent_port', 'cert_name', 'ca_fingerprint', 'force_newcert', 'zones', 'endpoints', 'ssl_cacert', 'ssl_key', 'ssl_cert', 'ca_cert', 'ca_key', 'ssl_remote_source', 'ticket_salt', 'ticket', 'delegate_pki' ]
+  when: idx.key not in ['ca_host', 'parent_host', 'ca_host_port', 'parent_port', 'cert_name', 'ca_fingerprint', 'force_newca', 'force_newcert', 'zones', 'endpoints', 'ssl_cacert', 'ssl_key', 'ssl_cert', 'ca_cert', 'ca_key', 'ssl_remote_source', 'ticket_salt', 'ticket', 'delegate_pki' ]
   loop: "{{ icinga2_dict_features.api | dict2items }}"
   loop_control:
     loop_var: idx
