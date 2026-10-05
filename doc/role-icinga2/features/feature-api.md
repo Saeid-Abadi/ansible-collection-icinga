@@ -75,6 +75,7 @@ The role writes both files to `/var/lib/icinga2/ca` before the master is set up.
 * The parameters only take effect with `parent_host: none`. On all other nodes, including a second master in an HA zone, they are ignored, so the CA key is never copied there.
 * The CA is enforced on every run. If you change it, the master re-signs its own certificate, but all other nodes need new certificates from the new CA.
 * `ca_cert` and `ca_key` have to be set together and cannot be combined with `force_newca`.
+* The CA certificate has to be valid for more than 397 days. Icinga renews a CA certificate that expires sooner on the master, keeping the key, and the role would replace it again on every run.
 * The Icinga DB environment ID is derived from the CA. A fixed CA therefore also keeps the environment ID stable when a master is rebuilt.
 
 ### Agent Setup
