@@ -91,28 +91,23 @@
         mode: "0700"
 
     - name: Copy CA certificate and key to CA directory
-      no_log: "{{ icinga2_no_log | default(icinga_no_log) | default(true) }}"
-      vars:
-        _is_pem: "{{ (_ca.value | trim).startswith('-----BEGIN') }}"
       ansible.builtin.copy:
-        src: "{{ omit if _is_pem | bool else _ca.value }}"
-        content: "{{ _ca.value if _is_pem | bool else omit }}"
-        remote_src: "{{ false if _is_pem | bool else icinga2_ssl_remote_source }}"
+        remote_src: "{{ icinga2_ssl_remote_source }}"
+        src: "{{ _ca.src }}"
         dest: "{{ _ca.dest }}"
         owner: "{{ icinga2_user }}"
         group: "{{ icinga2_group }}"
         mode: "{{ _ca.mode }}"
       notify: check-and-reload-icinga2-service
       loop:
-        - value: "{{ icinga2_ca_cert }}"
+        - src: "{{ icinga2_ca_cert }}"
           dest: "{{ icinga2_ca_path }}/ca.crt"
           mode: "0644"
-        - value: "{{ icinga2_ca_key }}"
+        - src: "{{ icinga2_ca_key }}"
           dest: "{{ icinga2_ca_path }}/ca.key"
           mode: "0600"
       loop_control:
         loop_var: _ca
-        label: "{{ _ca.dest }}"
 
 - name: Set up master instance
   when: icinga2_parent_host is defined and icinga2_parent_host == 'none'
@@ -248,12 +243,9 @@
         mode: "0750"
 
     - name: Copy self generated certificates to icinga2 certificate directory
-      vars:
-        _is_pem: "{{ (_crt.src | trim).startswith('-----BEGIN') }}"
       ansible.builtin.copy:
-        remote_src: "{{ false if _is_pem | bool else icinga2_ssl_remote_source }}"
-        src: "{{ omit if _is_pem | bool else _crt.src }}"
-        content: "{{ _crt.src if _is_pem | bool else omit }}"
+        remote_src: "{{ icinga2_ssl_remote_source }}"
+        src: "{{ _crt.src }}"
         dest: "{{ _crt.dest }}"
         owner: "{{ icinga2_user }}"
         group: "{{ icinga2_group }}"
@@ -262,7 +254,6 @@
       loop: "{{ _tmp_crt }}"
       loop_control:
         loop_var: _crt
-        label: "{{ _crt.dest }}"
 #  when: ( icinga2_ssl_cacert is defined and icinga2_ssl_cert is defined and icinga2_ssl_key is defined )
   when:
     - icinga2_ssl_cacert is defined

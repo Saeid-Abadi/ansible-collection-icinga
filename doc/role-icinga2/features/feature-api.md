@@ -58,15 +58,17 @@ parent_host: none
 
 By default the master creates its own CA on first setup. To use an existing CA instead, for example to rebuild or migrate a master without re-issuing the certificates of all other nodes, pass the CA certificate and key with `ca_cert` and `ca_key`.
 
-Both parameters accept either a path or the PEM content itself. A path is read from the Ansible controller, or from the remote host with `ssl_remote_source: true`. The content can come from any lookup, for example HashiCorp Vault:
+Both parameters are paths to files on the Ansible controller, or on the remote host with `ssl_remote_source: true`.
 
 ```yaml
 icinga2_features:
   - name: api
     parent_host: none
-    ca_cert: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/icinga/ca').crt }}"
-    ca_key: "{{ lookup('community.hashi_vault.hashi_vault', 'secret/data/icinga/ca').key }}"
+    ca_cert: files/icinga/ca.crt
+    ca_key: files/icinga/ca.key
 ```
+
+Keep the key encrypted with Ansible Vault, for example with `ansible-vault encrypt files/icinga/ca.key`. The role copies the files with `ansible.builtin.copy`, which decrypts vault encrypted files from the Ansible controller automatically. This does not apply to `ssl_remote_source: true`, where the files are copied on the remote host as they are.
 
 The role writes both files to `/var/lib/icinga2/ca` before the master is set up. The master then signs its own certificate and all certificate requests with this CA, and keeps `/var/lib/icinga2/certs/ca.crt` in sync with it.
 
@@ -218,8 +220,6 @@ ssl_key: certificate.key
 > **_NOTE:_** All three parameters have to be set otherwise a signing request is built
 and `parent_host` must be defined.
 
-Instead of a path, each of the three parameters also accepts the PEM content itself, for example from a lookup.
-
 The role will copy the files from your Ansible controller node to
 **/var/lib/icinga2/certs** on the remote host. File names are
 set to by the parameter `cert_name` (by default FQDN).
@@ -269,19 +269,19 @@ icinga2_features:
   * SHA256 fingerprint of the CA certificate. If defined, the fingerprint is validated.
 
 * `ca_cert: string`
-  * Path to or PEM content of the CA certificate the master should use instead of creating its own CA. Requires `ca_key`. Only effective with `parent_host: none`.
+  * Path to the CA certificate the master should use instead of creating its own CA. Requires `ca_key`. Only effective with `parent_host: none`.
 
 * `ca_key: string`
-  * Path to or PEM content of the CA private key the master should use instead of creating its own CA. Requires `ca_cert`. Only effective with `parent_host: none`.
+  * Path to the CA private key the master should use instead of creating its own CA. Requires `ca_cert`. Only effective with `parent_host: none`. Can be encrypted with Ansible Vault.
 
 * `ssl_cacert: string`
-  * Path to or PEM content of the ca file when using manual certificates
+  * Path to the ca file when using manual certificates
 
 * `ssl_cert: string`
-  * Path to or PEM content of the certificate file when using manual certificates.
+  * Path to the certificate file when using manual certificates.
 
 * `ssl_key: string`
-  * Path to or PEM content of the certificate key file when using manual certificates.
+  * Path to the certificate key file when using manual certificates.
 
 * `ssl_remote_source: boolean`
   * Whether to copy the certificates and key from the remote host instead of from the Ansible controller.
