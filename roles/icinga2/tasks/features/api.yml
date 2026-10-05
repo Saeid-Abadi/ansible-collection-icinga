@@ -151,7 +151,7 @@
 
     - name: Delegate ticket request to master
       no_log: "{{ icinga2_no_log | default(icinga_no_log) | default(true) }}"
-      delegate_to: "{{ icinga2_delegate_host | default(icinga2_parent_host) }}"
+      delegate_to: "{{ icinga2_delegate_host | default(icinga2_parent_host) | default(inventory_hostname) }}"
       ignore_unreachable: true
       when:
         - icinga2_parent_host != 'none'
@@ -199,7 +199,7 @@
     - name: Fetch CA certificate from delegated host
       ansible.builtin.slurp:
         src: "{{ icinga2_ca_path }}/ca.crt"
-      delegate_to: "{{ icinga2_delegate_host | default(icinga2_parent_host) }}"
+      delegate_to: "{{ icinga2_delegate_host | default(icinga2_parent_host) | default(inventory_hostname) }}"
       register: _delegated_ca_cert
 
     - name: Save CA certificate
@@ -212,7 +212,7 @@
 
     - name: Delegate ticket request to master
       no_log: "{{ icinga2_no_log | default(icinga_no_log) | default(true) }}"
-      delegate_to: "{{ icinga2_delegate_host | default(icinga2_parent_host) }}"
+      delegate_to: "{{ icinga2_delegate_host | default(icinga2_parent_host) | default(inventory_hostname) }}"
       ansible.builtin.command: icinga2 pki ticket --cn "{{ icinga2_cert_name }}" {% if icinga2_ticket_salt is defined %} --salt "{{ icinga2_ticket_salt }}"{% endif %}
       register: _icinga2_ticket
 
